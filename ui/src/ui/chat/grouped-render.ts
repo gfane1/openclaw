@@ -13,6 +13,7 @@ import {
 } from "./message-extract.ts";
 import { isToolResultMessage, normalizeRoleForGrouping } from "./message-normalizer.ts";
 import { extractToolCards, renderToolCardSidebar } from "./tool-cards.ts";
+import { isTtsSupported, renderTtsButton } from "./voice.ts";
 
 type ImageBlock = {
   url: string;
@@ -266,9 +267,12 @@ function renderGroupedMessage(
     return nothing;
   }
 
+  const canTts = role === "assistant" && Boolean(markdown?.trim()) && isTtsSupported();
+
   return html`
     <div class="${bubbleClasses}">
       ${canCopyMarkdown ? renderCopyAsMarkdownButton(markdown!) : nothing}
+      ${canTts ? renderTtsButton(markdown!) : nothing}
       ${renderMessageImages(images)}
       ${
         reasoningMarkdown

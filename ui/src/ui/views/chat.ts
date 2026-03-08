@@ -7,6 +7,7 @@ import {
   renderStreamingGroup,
 } from "../chat/grouped-render.ts";
 import { normalizeMessage, normalizeRoleForGrouping } from "../chat/message-normalizer.ts";
+import { renderMicButton } from "../chat/voice.ts";
 import { icons } from "../icons.ts";
 import { detectTextDirection } from "../text-direction.ts";
 import type { SessionsListResult } from "../types.ts";
@@ -459,6 +460,13 @@ export function renderChat(props: ChatProps) {
             ></textarea>
           </label>
           <div class="chat-compose__actions">
+            ${renderMicButton({
+              disabled: !props.connected,
+              onTranscript: (text) => {
+                const sep = props.draft.length > 0 && !props.draft.endsWith(" ") ? " " : "";
+                props.onDraftChange(props.draft + sep + text);
+              },
+            })}
             <button
               class="btn"
               ?disabled=${!props.connected || (!canAbort && props.sending)}
