@@ -2,6 +2,25 @@
 
 **Always reuse existing code - no redundancy!**
 
+## Workspace Boundary
+
+- **Project root**: `/home/aeneas/code/openclaw` — this is the ONLY directory you should read, write, or modify.
+- **Do NOT** touch any files or directories outside the project root unless the user explicitly asks.
+- **Do NOT** create, edit, or reference paths under `~/`, `/home/aeneas/code/openclaw-voice`, `/home/aeneas/.openclaw`, or any other external location.
+
+## Local Configuration (`.openclaw/`)
+
+The `.openclaw/` folder lives **inside** the project root and contains all OpenClaw gateway configuration, workspace files, and agent state. Key points:
+
+- **Config**: `.openclaw/openclaw.json` — main gateway config (API keys, providers, hooks, etc.). **Gitignored** — never committed.
+- **Template**: `.openclaw/openclaw.json.template` — redacted copy safe to commit (secrets replaced with `<REDACTED>`).
+- **Workspace**: `.openclaw/workspace/` — agent memory files (`MEMORY.md`, `memory/*.md`, `SOUL.md`, `AGENTS.md`, etc.). These **are** committed.
+- **Sensitive dirs** (all gitignored): `identity/`, `devices/`, `agents/*/sessions/`, `agents/*/agent/auth-profiles.json`, `logs/`, `cron/`.
+- **Docker**: `docker-compose.yml` mounts `.openclaw/` via `OPENCLAW_CONFIG_DIR` and `OPENCLAW_WORKSPACE_DIR` set in `.env`.
+- **`.env`** is gitignored and contains `OPENCLAW_CONFIG_DIR=/home/aeneas/code/openclaw/.openclaw` and `OPENCLAW_WORKSPACE_DIR=/home/aeneas/code/openclaw/.openclaw/workspace`.
+
+When editing OpenClaw configuration, edit `.openclaw/openclaw.json` directly (or use `openclaw config set`). When updating the template, re-run the redaction or edit `.openclaw/openclaw.json.template` manually.
+
 ## Tech Stack
 
 - **Runtime**: Node 22+ (Bun also supported for dev/scripts)
